@@ -253,7 +253,7 @@
 
                 People who smoke have the greatest risk of lung cancer. <br>The risk of lung cancer increases with the length of
                 time and number of cigarettes smoked.<br> Quitting smoking, even after smoking for many years, significantly lowers
-                the chances of developing lung cancer.<br> <p style="text-align: center,font-weight: bold">This is a Project which uses a Machine Learning Model to Predict the <br>presence of Lung cancer by using CT Scan images of Lungs.</p>
+                the chances of developing lung cancer.<br> <p style="text-align: center;font-weight: bold">This is a Project which uses a Machine Learning Model to Predict the <br>presence of Lung cancer by using CT Scan images of Lungs.</p>
             </p>
         </div>
     </div>
@@ -281,24 +281,19 @@
 
     <script>
         function uploadImage() {
-            var fileInput = document.getElementById('fileInput');
-            fileInput.click();
+    var fileInput = document.getElementById('fileInput');
+    fileInput.click();
 
-            fileInput.addEventListener('change', function () {
-                var file = fileInput.files[0];
-                if (file) {
-                    var reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function (e) {
-                        var image = document.getElementById('uploadedImage');
-                        image.src = e.target.result;
-                        image.parentElement.style.display = 'block';
-                        resizeImage(image);
-                        predictImage(file);
-                    };
-                }
-            });
+    fileInput.addEventListener('change', function () {
+        var file = fileInput.files[0];
+        if (file) {
+            // No need to display the image now
+            predictImage(file);
         }
+    });
+}
+
+
 
         function resizeImage(image) {
             var canvas = document.createElement('canvas');
@@ -312,30 +307,31 @@
         
 
         function predictImage(file) {
-            var formData = new FormData();
-            formData.append('file', file);
+    var formData = new FormData();
+    formData.append('file', file);
 
-            fetch('/predict', {
-                method: 'POST',
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    var predictionLabel = document.getElementById('predictionLabel');
-                    var uploadAgainButton = document.getElementById('uploadAgainButton');
+    fetch('/predict', {
+        method: 'POST',
+        body: formData,
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            var predictionLabel = document.getElementById('predictionLabel');
+            var uploadAgainButton = document.getElementById('uploadAgainButton');
 
-                    predictionLabel.textContent = data.prediction;
-                    if (data.prediction == 'Normal') {
-                        predictionLabel.style.color = 'green';
-                    } else {
-                        predictionLabel.style.color = 'red';
-                    }
-                    predictionLabel.style.display = 'block';
-                    uploadAgainButton.style.display = 'block';
-                    document.querySelector('.upload-button').style.display = 'none';
-                })
-                .catch((error) => console.error('Error:', error));
-        }
+            predictionLabel.textContent = data.prediction;
+            if (data.prediction == 'Normal') {
+                predictionLabel.style.color = 'green';
+            } else {
+                predictionLabel.style.color = 'red';
+            }
+            predictionLabel.style.display = 'block';
+            uploadAgainButton.style.display = 'block';
+            document.querySelector('.upload-button').style.display = 'none';
+        })
+        .catch((error) => console.error('Error:', error));
+}
+
 
         function uploadAgain() {
             location.reload();
